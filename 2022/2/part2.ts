@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 
 function getInput(currentChallengeIndex: number): string {
   return String(
@@ -73,3 +73,5 @@ const sum = gameScores.reduce((sum, item) => sum + item, 0);
 
 console.log(gameScores);
 console.log(sum);
+
+export {};

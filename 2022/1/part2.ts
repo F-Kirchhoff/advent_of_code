@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 
 function getInput(currentChallengeIndex: number): string {
   return String(
