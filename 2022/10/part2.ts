@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "../../node_modules/typescript/lib/typescript";
 export {};
 
 interface Instruction {
@@ -6,17 +7,13 @@ interface Instruction {
   value: number | null;
 }
 
-interface MemoryBlock {
-  cycle: number;
-  registerX: number;
-}
-
-interface Program {
+interface CPU {
   registerX: number;
   cycleIndex: number;
-  memory: MemoryBlock[];
+  screenBuffer: string[];
   execute: (Instruction) => void;
-  updateMemory: () => void;
+  tick: () => void;
+  draw: () => void;
 }
 
 function getInput(currentChallengeIndex: number): string[] {
@@ -34,24 +31,21 @@ function parseLine(line: string): Instruction {
   };
 }
 
-function createProgram(): Program {
+function createCPU(): CPU {
   return {
     registerX: 1,
     cycleIndex: 0,
-    memory: [],
+    screenBuffer: [],
+
     execute: function (instr: Instruction): void {
       switch (instr.code) {
         case "noop":
-          this.cycleIndex++;
-          this.updateMemory();
+          this.tick();
           break;
 
         case "addx":
-          this.cycleIndex++;
-          this.updateMemory();
-
-          this.cycleIndex++;
-          this.updateMemory();
+          this.tick();
+          this.tick();
           this.registerX += instr.value;
           break;
 
@@ -59,27 +53,30 @@ function createProgram(): Program {
           console.log("ERROR: You did something stupid.");
       }
     },
-    updateMemory: function (): void {
-      if ((this.cycleIndex - 20) % 40 === 0) {
-        this.memory.push({
-          cycle: this.cycleIndex,
-          registerX: this.registerX,
-        });
+    draw: function () {
+      const currentDrawX = (this.cycleIndex - 1) % 40;
+      const isLit: boolean = Math.abs(currentDrawX - this.registerX) <= 1;
+
+      if (currentDrawX === 0) {
+        this.screenBuffer.push("\n");
       }
+      this.screenBuffer.push(isLit ? "#" : ".");
+    },
+    tick: function () {
+      this.cycleIndex++;
+      this.draw();
     },
   };
 }
 
-const displayProgram: Program = createProgram();
+const displayProgram: CPU = createCPU();
 const instructions: Instruction[] = getInput(10).map(parseLine);
 
 instructions.forEach((instruction) => displayProgram.execute(instruction));
 
-console.log(displayProgram.memory);
-
-const signalStrengths: number[] = displayProgram.memory.map(
-  (block) => block.cycle * block.registerX
+const screenOutput = displayProgram.screenBuffer.reduce(
+  (output, symbol) => output + symbol,
+  ""
 );
-const result = signalStrengths.reduce((a, b) => a + b, 0);
 
-console.log(result);
+console.log(screenOutput);
