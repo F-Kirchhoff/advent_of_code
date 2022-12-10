@@ -22,6 +22,7 @@ interface Instruction {
 interface Rope {
   pieces: Point[];
   head: Point;
+  tail: Point;
   moveHead: (Instruction) => void;
   moveRope: () => void;
 }
@@ -48,6 +49,7 @@ function createRope(): Rope {
   return {
     pieces,
     head: pieces[0],
+    tail: pieces.at(-1),
     moveHead: function (instr: Instruction): void {
       switch (instr.dir) {
         case "U":
@@ -82,7 +84,6 @@ function createRope(): Rope {
 
 const instructions: Instruction[] = getInput(9).map(parseLine);
 const rope: Rope = createRope();
-console.log(rope);
 
 const tailTrack: Point[] = [];
 
@@ -92,12 +93,11 @@ for (const instr of instructions) {
     rope.moveRope();
 
     const wasTailHere = tailTrack.some(
-      (point) =>
-        point.x === rope.pieces.at(-1).x && point.y === rope.pieces.at(-1).y
+      (point) => point.x === rope.tail.x && point.y === rope.tail.y
     );
 
     if (!wasTailHere) {
-      tailTrack.push({ ...rope.pieces.at(-1) });
+      tailTrack.push({ ...rope.tail });
     }
   }
 }
