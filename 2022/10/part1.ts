@@ -11,7 +11,7 @@ interface MemoryBlock {
   registerX: number;
 }
 
-interface Programm {
+interface Program {
   registerX: number;
   cycleIndex: number;
   memory: MemoryBlock[];
@@ -34,7 +34,7 @@ function parseLine(line: string): Instruction {
   };
 }
 
-function createProgram(): Programm {
+function createProgram(): Program {
   return {
     registerX: 1,
     cycleIndex: 0,
@@ -70,14 +70,14 @@ function createProgram(): Programm {
   };
 }
 
-const displayProgramm: Programm = createProgram();
+const displayProgram: Program = createProgram();
 const instructions: Instruction[] = getInput(10).map(parseLine);
 
-instructions.forEach((instruction) => displayProgramm.execute(instruction));
+instructions.forEach((instruction) => displayProgram.execute(instruction));
 
-console.log(displayProgramm.memory);
+console.log(displayProgram.memory);
 
-const signalStrengths: number[] = displayProgramm.memory.map(
+const signalStrengths: number[] = displayProgram.memory.map(
   (block) => block.cycle * block.registerX
 );
 const result = signalStrengths.reduce((a, b) => a + b, 0);
