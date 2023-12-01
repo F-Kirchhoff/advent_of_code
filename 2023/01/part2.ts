@@ -1,12 +1,3 @@
-import * as fs from "fs";
+import { getInput } from "../../lib/utils";
 
-const index = "01";
-
-function getInput(currentChallengeIndex: string) {
-  return fs
-    .readFileSync("./2023/" + currentChallengeIndex + "/input.txt")
-    .toString()
-    .split("\n");
-}
-
-const data = getInput(index);
+const data = getInput("2023", "01");
