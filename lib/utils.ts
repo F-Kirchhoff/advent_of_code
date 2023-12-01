@@ -5,3 +5,5 @@ export function getInput(year: string, day: string) {
     .toString()
     .split("\n");
 }
+
+export const log = console.log;
