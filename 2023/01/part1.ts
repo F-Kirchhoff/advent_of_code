@@ -1,9 +1,13 @@
+import { log } from "console";
 import * as fs from "fs";
-export {};
 
-function getInput(currentChallengeIndex: number): string[] {
+const index = "01";
+
+function getInput(currentChallengeIndex: string) {
   return fs
-    .readFileSync("./2022/" + currentChallengeIndex + "/input.txt")
+    .readFileSync("./2023/" + currentChallengeIndex + "/input.txt")
     .toString()
     .split("\n");
 }
+
+const data = getInput(index);
